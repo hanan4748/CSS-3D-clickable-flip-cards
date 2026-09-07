@@ -11,7 +11,6 @@
 ---
 
 ## 🌟 Live Demo & Preview
-- **Live GitHub Pages URL**: `https://<your-github-username>.github.io/<your-repo-name>/`
 - **CodePen Ready**: Both `style.scss` (for CodePen with SCSS Preprocessor) and `style.css` (compiled vanilla CSS) are provided.
 
 ---
