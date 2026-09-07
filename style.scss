@@ -1,0 +1,815 @@
+// ===================================================================
+// AETHER HARDWARE // 3D Clickable Flip Cards
+// Built with Pure CSS / SCSS 3D Transforms + Checkbox State Hack
+// Compatible with CodePen (SCSS Preprocessor) and GitHub Pages
+// ===================================================================
+
+// --- Color Palette & Variables ---
+$bg-primary: #07090e;
+$bg-surface: rgba(15, 20, 32, 0.85);
+$bg-glass: rgba(18, 26, 43, 0.7);
+$border-glass: rgba(255, 255, 255, 0.12);
+$border-glass-hover: rgba(255, 255, 255, 0.25);
+
+$text-main: #f8fafc;
+$text-muted: #94a3b8;
+$text-dim: #64748b;
+
+// Accents for Products
+$cyan-glow: #06b6d4;
+$purple-glow: #a855f7;
+$amber-glow: #f59e0b;
+$blue-glow: #3b82f6;
+
+$font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+// --- Reset & Base Styles ---
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-color: $bg-primary;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 85% 25%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+    linear-gradient(to bottom, #07090e, #0c1017);
+  background-attachment: fixed;
+  color: $text-main;
+  font-family: $font-body;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+// --- App Container ---
+.app-container {
+  width: 100%;
+  max-width: 1360px;
+  padding: 3rem 1.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+// --- Header ---
+.header {
+  text-align: center;
+  max-width: 780px;
+  margin-bottom: 3.5rem;
+
+  .badge-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    border-radius: 9999px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    color: #38bdf8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(8px);
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      animation: pulse 2s infinite ease-in-out;
+    }
+  }
+
+  h1 {
+    font-family: $font-heading;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: $text-muted;
+    font-weight: 400;
+    max-width: 620px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .interactive-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: $text-dim;
+    font-size: 0.85rem;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      stroke: $cyan-glow;
+      animation: spinSlow 8s linear infinite;
+    }
+  }
+}
+
+// --- Card Controls Bar ---
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+
+  .control-btn {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: $text-muted;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: $text-main;
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .sound-toggle.active {
+    border-color: rgba(6, 182, 212, 0.4);
+    color: #38bdf8;
+    background: rgba(6, 182, 212, 0.08);
+  }
+}
+
+// --- Cards Grid Wrapper ---
+.cards-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1200px;
+  perspective: 2000px; // Sets 3D scene depth
+}
+
+// --- The 3D Card Unit ---
+.flip-card {
+  height: 520px;
+  perspective: 1600px;
+  position: relative;
+
+  // The Pure CSS Toggle Hack (Invisible checkbox)
+  .flip-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+
+    // FLIP TRIGGER: When checkbox is checked, rotate the content 180 degrees
+    &:checked ~ .card-content {
+      transform: rotateY(180deg);
+    }
+  }
+
+  // Card Content Wrapper (3D Transform Stage)
+  .card-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  }
+
+  // Common styles for both faces
+  .card-front,
+  .card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    border-radius: 20px;
+    overflow: hidden;
+    background: $bg-surface;
+    border: 1px solid $border-glass;
+    backdrop-filter: blur(16px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+
+    &:hover {
+      border-color: $border-glass-hover;
+    }
+  }
+
+  // --- Front Face ---
+  .card-front {
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    transform: rotateY(0deg);
+
+    .image-container {
+      position: relative;
+      height: 55%;
+      width: 100%;
+      overflow: hidden;
+      background: #0d121c;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .gradient-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 14, 23, 0.1) 0%,
+          rgba(10, 14, 23, 0.6) 60%,
+          rgba(15, 20, 32, 0.98) 100%
+        );
+      }
+
+      .category-tag {
+        position: absolute;
+        top: 1.25rem;
+        left: 1.25rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        backdrop-filter: blur(12px);
+        transform: translateZ(40px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .rating-tag {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 0.35rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        transform: translateZ(40px);
+        backdrop-filter: blur(12px);
+
+        svg {
+          width: 13px;
+          height: 13px;
+          fill: #eab308;
+        }
+      }
+    }
+
+    &:hover .image-container img {
+      transform: scale(1.06);
+    }
+
+    // Inner 3D Content
+    .front-inner {
+      height: 45%;
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform: translateZ(60px); // 3D depth pop!
+      transform-style: preserve-3d;
+
+      .product-info {
+        h3 {
+          font-family: $font-heading;
+          font-size: 1.45rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin-bottom: 0.35rem;
+          color: #ffffff;
+        }
+
+        .tagline {
+          font-size: 0.875rem;
+          color: $text-muted;
+          margin-bottom: 0.85rem;
+        }
+
+        .feature-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+
+          .chip {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.75rem;
+            color: #cbd5e1;
+          }
+        }
+      }
+
+      .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+        .price-box {
+          .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: $text-dim;
+            display: block;
+          }
+          .price {
+            font-family: $font-heading;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+
+  // --- Back Face ---
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.75rem;
+    background: radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.7) 0%, rgba(15, 20, 32, 0.95) 100%);
+
+    .back-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform: translateZ(60px); // 3D depth pop!
+      transform-style: preserve-3d;
+    }
+
+    .back-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+
+      .header-text {
+        .badge-small {
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: $cyan-glow;
+          display: block;
+          margin-bottom: 0.2rem;
+        }
+
+        h3 {
+          font-family: $font-heading;
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: #ffffff;
+        }
+      }
+
+      .close-flip-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $text-muted;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          color: #ffffff;
+          transform: scale(1.08);
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    // Spec Grid
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+
+      .spec-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .spec-icon {
+          width: 22px;
+          height: 22px;
+          margin-bottom: 0.4rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 6px;
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
+        }
+
+        .spec-label {
+          font-size: 0.72rem;
+          color: $text-dim;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          display: block;
+        }
+
+        .spec-val {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: #f1f5f9;
+        }
+      }
+    }
+
+    // Technology narrative snippet
+    .tech-summary {
+      font-size: 0.82rem;
+      color: $text-muted;
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+      padding-left: 0.75rem;
+      border-left: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    // Back Actions
+    .back-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+
+      .buy-btn {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 10px;
+        border: none;
+        font-family: $font-heading;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.25s ease;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          filter: brightness(1.15);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .return-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $text-dim;
+        cursor: pointer;
+        padding: 0.4rem;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: $text-main;
+        }
+
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+  }
+
+  // --- Flip Button (The Label Element on Front) ---
+  .flip-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 1.15rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform: translateZ(40px);
+
+    svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      transform: translateZ(50px) translateY(-2px);
+      box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.4);
+
+      svg {
+        transform: translateX(3px);
+      }
+    }
+
+    &:active {
+      transform: translateZ(40px) translateY(0);
+    }
+  }
+
+  // --- Product Specific Themes ---
+  &.card-audio {
+    .category-tag {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #c084fc;
+    }
+
+    .flip-btn {
+      background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    }
+
+    .buy-btn {
+      background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+    }
+
+    .spec-icon {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+    }
+
+    .tech-summary {
+      border-left-color: #a855f7;
+    }
+
+    &:hover .card-front,
+    &:hover .card-back {
+      border-color: rgba(168, 85, 247, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.15);
+    }
+  }
+
+  &.card-chrono {
+    .category-tag {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+    }
+
+    .flip-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .buy-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+    }
+
+    .spec-icon {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .tech-summary {
+      border-left-color: #f59e0b;
+    }
+
+    &:hover .card-front,
+    &:hover .card-back {
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.15);
+    }
+  }
+
+  &.card-optix {
+    .category-tag {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: #38bdf8;
+    }
+
+    .flip-btn {
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+
+    .buy-btn {
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(6, 182, 212, 0.35);
+    }
+
+    .spec-icon {
+      background: rgba(6, 182, 212, 0.15);
+      color: #38bdf8;
+    }
+
+    .tech-summary {
+      border-left-color: #06b6d4;
+    }
+
+    &:hover .card-front,
+    &:hover .card-back {
+      border-color: rgba(6, 182, 212, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.15);
+    }
+  }
+}
+
+// --- Footer Section ---
+.footer {
+  margin-top: 5rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 2.5rem;
+  width: 100%;
+  max-width: 900px;
+  color: $text-dim;
+  font-size: 0.85rem;
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    a {
+      color: $text-muted;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $text-main;
+      }
+    }
+  }
+
+  .internship-note {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 1rem;
+    color: #94a3b8;
+
+    strong {
+      color: #f8fafc;
+    }
+  }
+}
+
+// --- Keyframe Animations ---
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// --- Responsive Adjustments ---
+@media (max-width: 768px) {
+  .app-container {
+    padding: 2rem 1rem 3.5rem;
+  }
+
+  .cards-wrapper {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+
+  .flip-card {
+    height: 500px;
+  }
+}
