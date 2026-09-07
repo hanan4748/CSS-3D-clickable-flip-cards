@@ -1,24 +1,64 @@
-# AETHER // Next-Gen Spatial Hardware
-## CSS 3D Clickable Flip Cards (Lime-Light TechLead Internship — Task 1)
+# 3D Interactive Flip Cards
 
-[![GitHub Pages](https://img.shields.io/badge/deployment-GitHub%20Pages-brightgreen)](https://pages.github.com/)
-[![CSS 3D](https://img.shields.io/badge/CSS-3D%20Transforms-blue)](https://developer.mozilla.org/en-US/docs/Web/CSS/transform-style)
-[![SCSS](https://img.shields.io/badge/Preprocessor-SCSS-pink)](https://sass-lang.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> Created for **Task 1** of the Lime-Light TechLead Internship Programme.
 
-> **Task 1 Assignment**: Design and implement interactive CSS 3D clickable flip cards to promote/advertise a product of choice, study GitHub Pages deployment, and host the live project.
+👉 **[View the Live Demo](https://hanan4748.github.io/CSS-3D-clickable-flip-cards/)**
 
 ---
 
-## 🌟 Live Demo & Preview
-- **CodePen Ready**: Both `style.scss` (for CodePen with SCSS Preprocessor) and `style.css` (compiled vanilla CSS) are provided.
+## About the Project
+
+This project is an interactive showcase built around **pure CSS 3D flip cards**. 
+
+Instead of a flat product display, each card can be clicked to smoothly turn around in 3D space, revealing detailed engineering specifications and pre-order options on the back.
+
+The showcase features three futuristic gadgets from the **Aether Spatial Series**:
+
+- 🎧 **Aether Auralis X1** — Spatial audio headphones with hybrid active noise cancellation and ultra-low latency.
+- ⌚ **Titan Chrono V2** — A titanium kinetic smartwatch with a holographic micro-OLED dial and biometric sensors.
+- 👓 **Aether Optix Pro** — Ultra-light augmented reality glasses featuring dual 4K waveguide displays.
 
 ---
 
-## 🚀 Product Concept: AETHER Flagship Hardware Series
-A futuristic showcase for three bleeding-edge spatial computing and bio-kinetic wearables:
-1. **Aether Auralis X1** — Spatial Neuro-Acoustic Headset with Planar-Bio drivers, hybrid ANC, and lossless quantum link.
-2. **Titan Chrono V2** — Grade 5 titanium DLC kinetic smartwatch with holographic Micro-OLED dial and satellite telemetry.
-3. **Aether Optix Pro** — Neural augmented reality smart glasses with dual 4K holographic waveguides in a 42g titanium frame.
+## How It Works
+
+The core flip effect is built with **pure CSS / SCSS** and works without needing JavaScript:
+
+1. **The Checkbox Trick**: Each card contains a hidden `<input type="checkbox">`. The buttons are `<label>` elements linked to the checkbox. Clicking a button toggles the checkbox on or off.
+2. **The 3D Flip**: The card container has `perspective: 1600px` to create real depth. When the checkbox is `:checked`, CSS rotates the card with `transform: rotateY(180deg)`.
+3. **Two-Sided Faces**: Both faces use `backface-visibility: hidden;` and `transform-style: preserve-3d;`, ensuring you only see the side currently facing you.
+4. **Floating Layers (`translateZ`)**: Inner titles, badges, and buttons use `transform: translateZ(...)` so they pop out toward you in physical layers during the animation.
+
+### Extra Polish (via `script.js`)
+- **Procedural Sound**: Generates a soft sci-fi swoosh when cards flip using the Web Audio API (no external MP3 files required).
+- **Subtle Mouse Tilt**: Tilts slightly with your cursor to highlight the layered 3D depth.
+- **Keyboard Friendly**: You can tab through the cards and flip them using the `Enter` or `Space` key.
+- **Quick Controls**: Includes buttons to flip or reset all cards at once.
 
 ---
+
+## Project Structure
+
+```text
+CSS-3D-clickable-flip-cards/
+├── index.html         # Semantic markup with the pure CSS checkbox mechanism
+├── style.scss         # Source SCSS with variables, nesting, and 3D transforms
+├── style.css          # Compiled CSS ready for all browsers and GitHub Pages
+├── script.js          # Progressive enhancements (audio, mouse tilt, keyboard support)
+├── .nojekyll          # Ensures GitHub Pages serves all assets directly
+└── assets/
+    └── images/        # High-resolution product images
+        ├── headphones.jpg
+        ├── smartwatch.jpg
+        └── arglasses.jpg
+```
+
+---
+
+## Testing on CodePen
+
+If you want to view or modify this project on [CodePen](https://codepen.io/):
+
+1. Paste the HTML into the **HTML** editor.
+2. Click the gear icon next to **CSS**, set the **CSS Preprocessor** to **SCSS**, and paste the contents of `style.scss`.
+3. The 3D interactive flip cards will run instantly.
