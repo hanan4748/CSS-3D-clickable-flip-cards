@@ -1,6 +1,6 @@
 # 3D Interactive Flip Cards
 
-> Created for **Task 1** of the Lime-Light TechLead Internship Programme.
+> Created for **Task 1** of the Lime-Light Internship Programme.
 
 👉 **[View the Live Demo](https://hanan4748.github.io/CSS-3D-clickable-flip-cards/)**
 
